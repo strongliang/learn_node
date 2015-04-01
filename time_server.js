@@ -1,19 +1,15 @@
 var net = require('net')
+var zeroFill = require('zerofill');
+
 var server = net.createServer(function (socket) {
     var res = ''
     var date = new Date()
-    res += date.getFullYear() + '-'
-    var month = date.getMonth()+1
-    if (month < 10) {
-        res += '0' + month + '-'
-    } else {
-        res += month + '-'
-    }
-    res += date.getDate() + ' '
-    res += date.getHours() + ':'
-    res += date.getMinutes()
+    res += zeroFill(date.getFullYear(), 2) + '-'
+    res += zeroFill(date.getMonth() + 1, 2) + '-'
+    res += zeroFill(date.getDate(), 2) + ' '
+    res += zeroFill(date.getHours(), 2) + ':'
+    res += zeroFill(date.getMinutes(), 2)
     socket.end(res + '\r\n')
-    // socket.pipe(socket);
 })
 
 // telnet 127.0.0.1 8000 can be used to do this
