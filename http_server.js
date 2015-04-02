@@ -5,7 +5,7 @@ var filename = process.argv[3]
 
 var http = require('http')
 
-var serv = http.createServer(function(req, rsp) {
+var serv = http.createServer(function (req, rsp) {
     var readStream = fs.createReadStream(filename)
 
     readStream.on('open', function () {

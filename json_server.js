@@ -1,3 +1,4 @@
+// json, routing, date, url parsing
 var port = process.argv[2]
 var http = require('http')
 var url = require('url')
@@ -8,21 +9,58 @@ var serv = http.createServer(function (req, rsp) {
     }
     rsp.writeHead(200, { 'Content-Type': 'application/json' })
 
-    urlp = url.parse(req.url)
+    // the 2nd true is important, it parses query string
+    urlp = url.parse(req.url, true)
+    date = new Date(urlp.query.iso)
     if (urlp.pathname == '/api/parsetime') {
-        date = new Date()
-        sdate = urlp.query.split('=')[1]
         data = {
-            'hour': date.getHours(sdate),
-            'minute': date.getMinutes(sdate),
-            'second': date.getSeconds(sdate)
+            'hour': date.getHours(),
+            'minute': date.getMinutes(),
+            'second': date.getSeconds()
         }
     } else if (urlp.pathname == '/api/unixtime') {
         data = {
-            'unixtime': new Date().getTime(urlp.query.split('=')[1]).toString()
+            'unixtime': date.getTime()
         }
     }
     rsp.end(JSON.stringify(data))
 })
 
+
+/* official solution
+    var http = require('http')
+    var url = require('url')
+
+    function parsetime (time) {
+      return {
+        hour: time.getHours(),
+        minute: time.getMinutes(),
+        second: time.getSeconds()
+      }
+    }
+
+    function unixtime (time) {
+      return { unixtime : time.getTime() }
+    }
+
+    var server = http.createServer(function (req, res) {
+      var parsedUrl = url.parse(req.url, true)
+      var time = new Date(parsedUrl.query.iso)
+      var result
+
+      if (/^\/api\/parsetime/.test(req.url))
+        result = parsetime(time)
+      else if (/^\/api\/unixtime/.test(req.url))
+        result = unixtime(time)
+
+      if (result) {
+        res.writeHead(200, { 'Content-Type': 'application/json' })
+        res.end(JSON.stringify(result))
+      } else {
+        res.writeHead(404)
+        res.end()
+      }
+    })
+    server.listen(Number(process.argv[2]))
+*/
 serv.listen(port)

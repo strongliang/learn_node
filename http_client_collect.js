@@ -1,3 +1,4 @@
+// collect result, simple client, utf8
 var http = require('http')
 var bl = require('bl')
 

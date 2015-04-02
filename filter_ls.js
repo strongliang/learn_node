@@ -1,3 +1,4 @@
+// filesystem, buffer, directory, regex, filter
 var fs = require('fs');
 
 var dirname = process.argv[2];
